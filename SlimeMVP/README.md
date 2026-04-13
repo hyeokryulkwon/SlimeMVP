@@ -6,8 +6,7 @@
 - Stage0(5분) -> Stage1 단일 진화
 - Stage1(1일) -> Stage2
 - Stage2(2일) -> Stage3
-- HealthKit 활동 데이터(이동 칼로리/운동 시간)
-- Screen/Usage 기반 SleepPoint 엔진(IdleGap, micro-awake, fallback)
+- HealthKit 활동/수면 데이터(이동 칼로리/걸음 수/수면 시간)
 - 텍스트 디버그 UI(입력/카테고리/trace)
 
 ## 폴더 구조
@@ -15,7 +14,6 @@
 - `UI/DebugTextView.swift` : 텍스트 디버그 화면
 - `UI/MVPViewModel.swift` : 오케스트레이션
 - `Data/HealthKitActivityProvider.swift` : HealthKit 수집
-- `Data/UsageProvider.swift` : usage real/mock/manual 모드
 - `Domain/Models/*` : 모델
 - `Domain/Engines/*` : 알고리즘/진화/타이머
 
@@ -28,8 +26,10 @@
 5. 실기기(iPhone) 선택 후 실행
 
 ## 주의 사항
-- iOS 정책상 Screen/Usage 원시 이벤트 접근은 제한될 수 있습니다.
-- 따라서 `DataSourceMode.real`이 불가한 경우 `mock/manual`로 fallback 하도록 구성했습니다.
+- `DataSourceMode.real`은 HealthKit 실데이터(`moveKcal`, `steps`, `sleepMinutes`)를 사용합니다.
+- 실데이터가 없거나 권한이 없으면 `DEBUG INFO`에서 원인을 확인할 수 있습니다.
+- 앱이 종료된 동안 백그라운드에서 계속 실행되지는 않습니다.
+- 대신 다음 실행/활성화 시점에 `lastTickAt` 이후 경과 시간을 catch-up 방식으로 반영합니다.
 - MVP 목적은 파이프라인 검증이므로 텍스트 UI 중심입니다.
 
 ## 빠른 검증 시나리오

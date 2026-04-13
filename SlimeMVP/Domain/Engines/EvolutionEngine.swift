@@ -5,23 +5,38 @@ enum EvolutionEngine {
         switch current.stage {
         case .stage0:
             return EvolutionResult(
-                next: CharacterState(characterId: "SL-01-01", stage: .stage1, parentId: "SL-00-01", enteredAt: now, elapsedMinutes: 0, lastTickAt: now),
+                next: CharacterState(characterId: "SL-01-01", stage: .stage1, parentId: "SL-00-01", enteredAt: now, elapsedMinutes: 0, totalElapsedMinutes: current.totalElapsedMinutes, lastTickAt: now),
                 reason: "Stage0 5분 경과: 단일 루트"
             )
         case .stage1:
             let next = evolveStage1To2(snapshot: snapshot)
             return EvolutionResult(
-                next: CharacterState(characterId: next.id, stage: .stage2, parentId: current.characterId, enteredAt: now, elapsedMinutes: 0, lastTickAt: now),
+                next: CharacterState(characterId: next.id, stage: .stage2, parentId: current.characterId, enteredAt: now, elapsedMinutes: 0, totalElapsedMinutes: current.totalElapsedMinutes, lastTickAt: now),
                 reason: next.reason
             )
         case .stage2:
             let next = evolveStage2To3(parent: current.characterId, snapshot: snapshot)
             return EvolutionResult(
-                next: CharacterState(characterId: next.id, stage: .stage3, parentId: current.characterId, enteredAt: now, elapsedMinutes: 0, lastTickAt: now),
+                next: CharacterState(characterId: next.id, stage: .stage3, parentId: current.characterId, enteredAt: now, elapsedMinutes: 0, totalElapsedMinutes: current.totalElapsedMinutes, lastTickAt: now),
                 reason: next.reason
             )
         case .stage3:
             return EvolutionResult(next: current, reason: "Stage3 최종 단계")
+        }
+    }
+
+    static func previewNext(current: CharacterState, snapshot: CategorySnapshot) -> (id: String, stage: Stage, reason: String)? {
+        switch current.stage {
+        case .stage0:
+            return ("SL-01-01", .stage1, "Stage0 5분 경과: 단일 루트")
+        case .stage1:
+            let next = evolveStage1To2(snapshot: snapshot)
+            return (next.id, .stage2, next.reason)
+        case .stage2:
+            let next = evolveStage2To3(parent: current.characterId, snapshot: snapshot)
+            return (next.id, .stage3, next.reason)
+        case .stage3:
+            return nil
         }
     }
 

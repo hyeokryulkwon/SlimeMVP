@@ -40,29 +40,28 @@ struct DebugTextView: View {
                             }
 
                             HStack {
-                                Button("Manual 샘플 세션 주입") { vm.setManualSample() }
                                 Button("파이프라인 실행") { Task { await vm.runPipeline() } }
                             }
                         }
                     }
 
-                    GroupBox("현재 캐릭터") {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("ID: \(vm.currentCharacter.characterId)")
-                            Text("Name: \(CharacterCatalog.names[vm.currentCharacter.characterId] ?? "Unknown")")
-                            Text("Stage: \(vm.currentCharacter.stage.rawValue)")
-                            Text("Elapsed: \(vm.currentCharacter.elapsedMinutes) min")
-                            Text("Remaining: \(vm.remainingMinutes) min")
+                        GroupBox("현재 캐릭터") {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("ID: \(vm.currentCharacter.characterId)")
+                                Text("Name: \(CharacterCatalog.names[vm.currentCharacter.characterId] ?? "Unknown")")
+                                Text("Stage: \(vm.currentCharacter.stage.rawValue)")
+                                Text("StageElapsed: \(vm.currentCharacter.elapsedMinutes) min")
+                                Text("TotalElapsed: \(vm.currentCharacter.totalElapsedMinutes) min")
+                                Text("StageRemaining: \(vm.remainingMinutes) min")
+                            }
+                            .font(.system(.body, design: .monospaced))
                         }
-                        .font(.system(.body, design: .monospaced))
-                    }
 
                     if let output = vm.output {
                         GroupBox("입력 데이터") {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("moveKcal: \(Int(output.daily.moveKcal))")
-                                Text("exerciseMin: \(Int(output.daily.exerciseMin))")
-                                Text("screenEvents: \(output.daily.screenEvents.count)")
+                                Text("steps: \(Int(output.daily.steps))")
                                 Text("play/pet: \(output.daily.playCount) / \(output.daily.petCount)")
                                 Text("completeness: \(String(describing: output.daily.completeness))")
                             }
@@ -72,7 +71,7 @@ struct DebugTextView: View {
                         GroupBox("카테고리") {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("Weight: \(output.snapshot.weight.rawValue)")
-                                Text("Sleep: \(output.snapshot.sleep.rawValue) (point: \(String(format: "%.2f", output.trace.sleep.sleepPoint)))")
+                                Text("Sleep: \(output.snapshot.sleep.rawValue)")
                                 Text("Happiness: \(output.snapshot.happiness.rawValue)")
                             }
                             .font(.system(.body, design: .monospaced))
@@ -82,7 +81,7 @@ struct DebugTextView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("usedFallback: \(output.trace.sleep.usedFallback ? "true" : "false")")
                                 Text("sleepMinutes: \(output.trace.sleep.sleepMinutes)")
-                                Text("weightDiffPct: \(String(format: "%.3f", output.trace.weightDiffPct))")
+                                Text("weightActivityGap: \(String(format: "%.3f", output.trace.weightActivityGap))")
                                 Text("happinessPoint: \(output.trace.happinessPoint)")
                                 Text("evolutionReason: \(output.trace.evolutionReason)")
                             }
